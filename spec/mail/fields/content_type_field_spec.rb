@@ -370,6 +370,17 @@ describe Mail::ContentTypeField do
       c.sub_type.should eq 'mixed'
       c.parameters.should eql({"boundary" => "Apple-Mail-13-196941151"})
     end
+    
+    it "should handle tab char" do
+      type = %q{multipart/mixed;
+      	boundary="_006_29D151D03C4FF5488765772E00224FF90CB221E8C4Cronusvaluela_"}
+      c = Mail::ContentTypeField.new(type)
+      c.content_type.should eq 'multipart/mixed'
+      c.main_type.should eq 'multipart'
+      c.sub_type.should eq 'mixed'
+      c.parameters.should eql({"boundary" => '_006_29D151D03C4FF5488765772E00224FF90CB221E8C4Cronusvaluela_'})
+      c.parameters[:boundary].should eq "_006_29D151D03C4FF5488765772E00224FF90CB221E8C4Cronusvaluela_"
+    end
 
     it "should handle 'multipart/mixed; boundary=mimepart_427e4cb4ca329_133ae40413c81ef'" do
       string = %q{multipart/mixed; boundary=mimepart_427e4cb4ca329_133ae40413c81ef}
